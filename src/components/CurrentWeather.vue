@@ -1,20 +1,20 @@
 <template>
     <div class="display">
         <div class="icon-card">
-            <skycon v-bind:condition="theIcon" :width="100" :height="100" align="right" />
-            <div class="description">{{summary}}</div>
+            <skycon v-bind:condition="current.theIcon" :width="100" :height="100" align="right" />
+            <div class="description">{{today.summary}}</div>
         </div>
         <div class="current-weather">
             <div class="degree">
-                {{checked ? tempC : tempF}}&deg;{{ checked ? 'C' : 'F'}}
+                {{checked ? current.tempC : current.tempF}}&deg;{{ checked ? 'C' : 'F'}}
             </div>
             <!-- <div class="location">{{place}}</div> -->
-            <div class="text">High: {{checked ? highTempC : highTempF}}&deg;</div>
-            <div class="text">Low: {{checked ? lowTempC : lowTempF}}&deg;</div>
+            <div class="text">High: {{checked ? current.highTempC : current.highTempF}}&deg;</div>
+            <div class="text">Low: {{checked ? current.lowTempC : current.lowTempF}}&deg;</div>
             <div class="text">
-                <font-awesome-icon icon="tint" />: {{rainPercent}}%
+                <font-awesome-icon icon="tint" />: {{current.rainPercent}}%
             </div>
-            <div class="text">UV: {{uvLevel}}/10</div>
+            <div class="text">UV: {{current.uvLevel}}/10</div>
         </div>
         <label class="switch">
             <input type="checkbox" v-model="checked" @click="$emit('scaleClicked')" />
@@ -24,24 +24,26 @@
 </template>
 
 <script>
+// import moment from 'moment'
+
 export default {
     name: 'CurrentWeather',
     props: ["weather"],
     data() {
         return {
-            checked: false
-            // today: {
-            //     tempF: 0,
-            //     tempC: 0,
-            //     icon: '',
-            //     highTempF: 0,
-            //     lowTempF: 0,
-            //     highTempC: 0,
-            //     lowTempC: 0,
-            //     uvLevel: 0,
-            //     rainPercent: 0,
-            //     summary: ''
-            // }
+            checked: false,
+            today: {
+                tempF: 0,
+                tempC: 0,
+                icon: '',
+                highTempF: 0,
+                lowTempF: 0,
+                highTempC: 0,
+                lowTempC: 0,
+                uvLevel: 0,
+                rainPercent: 0,
+                summary: ''
+            }
         }
     },
     methods: {
@@ -50,54 +52,22 @@ export default {
         }
     },
     computed: {
-        // place: function() {
-        //     return this.weather.location;
-        // },
-        tempF: function() {
-            return Math.ceil(this.weather.currently.temperature);
-        },
-        tempC: function() {
-            return this.celsiusConversion(this.weather.currently.temperature);
-        },
-        theIcon: function() {
-            return this.weather.currently.icon;
-        },
-        highTempF: function() {
-            return Math.ceil(this.weather.daily.data[0].temperatureHigh);
-        },
-        highTempC: function() {
-            return this.celsiusConversion(this.weather.daily.data[0].temperatureHigh);
-        },
-        lowTempF: function() {
-            return Math.ceil(this.weather.daily.data[0].temperatureLow);
-        },
-        lowTempC: function() {
-            return this.celsiusConversion(this.weather.daily.data[0].temperatureLow);
-        },
-        uvLevel: function() {
-            return this.weather.currently.uvIndex;
-        },
-        rainPercent: function() {
-            return Math.ceil(this.weather.currently.precipProbability * 100);
-        },
-        summary: function() {
-            return this.weather.currently.summary;
+        current() {
+            let self = this;
+            return self.today = {
+                tempF: Math.ceil(this.weather.currently.temperature),
+                tempC: this.celsiusConversion(this.weather.currently.temperature),
+                theIcon: this.weather.currently.icon,
+                highTempF: Math.ceil(this.weather.daily.data[0].temperatureHigh),
+                highTempC: this.celsiusConversion(this.weather.daily.data[0].temperatureHigh),
+                lowTempF: Math.ceil(this.weather.daily.data[0].temperatureLow),
+                lowTempC: this.celsiusConversion(this.weather.daily.data[0].temperatureLow),
+                uvLevel: this.weather.currently.uvIndex,
+                rainPercent: Math.ceil(this.weather.currently.precipProbability * 100),
+                summary: this.weather.currently.summary
+            }
         }
     }
-    // created() {
-    //     if(this.weather) {
-    //         this.today.tempF = Math.ceil(this.weather.currently.temperature);
-    //         this.today.tempC = this.celsiusConversion(this.today.tempF);
-    //         this.today.icon = this.weather.currently.icon;
-    //         this.today.highTempF = Math.ceil(this.weather.daily.data[0].temperatureHigh);
-    //         this.today.highTempC = this.celsiusConversion(this.weather.daily.data[0].temperatureHigh);
-    //         this.today.lowTempF = Math.ceil(this.weather.daily.data[0].temperatureLow);
-    //         this.today.lowTempC = this.celsiusConversion(this.weather.daily.data[0].temperatureLow);
-    //         this.today.uvLevel = this.weather.currently.uvIndex;
-    //         this.today.rainPercent = this.weather.currently.precipProbability * 100;
-    //         this.today.summary = this.weather.currently.summary;
-    //     }
-    // }
 }
 </script>
 
@@ -105,7 +75,7 @@ export default {
 .display {
     width: 400px;
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr 0fr;
     margin: 0 auto;
 }
 .icon-card {

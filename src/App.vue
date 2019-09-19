@@ -34,7 +34,7 @@ export default {
   methods: {
     updateWeather(newWeatherUpdate) {
       this.weather = newWeatherUpdate;
-      console.log("Weather updated!!");
+      // console.log("Weather updated!!");
     },
     // reverseGeocoding(geo) {
     //       let self = this;
@@ -50,19 +50,6 @@ export default {
     //           });
     // },
     getWeatherOnCurrentPosition(coordinates) {
-        /* axios({
-          url: 'https://api.forecast.io/forecast/4ef00c506da530ad9b922f03b286243d/' + coordinates.latitude + ',' + coordinates.longitude,
-          method: 'GET',
-          responseType: 'json'
-        }).then(resp => {
-          this.weather = resp.data;
-          console.log(coordinates.latitude + ', ' + coordinates.longitude);
-          console.log(resp);
-        })
-        .catch(e => {
-          this.errors.push(e);
-        })*/
-
         //   **********  must use self = this ************** 
         // this reference vue-app.  must pass it to self, then pass into callback function (success call back)
         // have to update the view's data-items after you've received the data. Note, that ajax is asyncronous, 
@@ -81,8 +68,6 @@ export default {
             if (Object.keys(resp).length !== 0){
               self.weather = resp;
               // self.reverseGeocoding(self.geolocation);
-              console.log('api called', resp); 
-              console.log(coordinates.latitude + ', ' + coordinates.longitude);  
             }
           },
           error: function(error) {
@@ -117,7 +102,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin: 20em auto;
+  margin: 3em auto;
+  display: grid;
+  align-items: center;
+  grid-template-rows: repeat(auto-fit, minmax(10rem, 1fr));
 }
 canvas {
     top:0;

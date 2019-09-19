@@ -42,9 +42,9 @@ export default {
                     //Check that the returned objects contains data
                     if (Object.keys(resp).length !== 0){
                         self.$emit('updatedWeather', resp)
-                        self.searchTimeStamp = moment().format("MM/DD/YY h:mm:ss A");
-                        console.log('update api called', resp); 
-                        console.log(latitude + ', ' + longitude);  
+                        self.searchTimeStamp = moment(resp.currently.time * 1000).format("MM/DD/YY h:mm:ss A");
+                        // console.log('update api called', resp); 
+                        // console.log(latitude + ', ' + longitude);  
                     }
                 },
                 error: function(error) {
@@ -59,7 +59,7 @@ export default {
                     .then(resp => {
                         self.geolocation = resp.data.results[0];
                         self.getWeather();
-                        console.log(resp);
+                        // console.log(resp);
                     })
                     .catch(e => {
                         self.errors.push(e);
@@ -72,7 +72,7 @@ export default {
 
 <style scoped>
 .wrap {
-    width: 30%;
+    width: 25rem;
     /* position: absolute;
     top: 20%; 
     left: 50%;

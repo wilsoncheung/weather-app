@@ -24,8 +24,6 @@ export default {
     props: ["weather", "changeScale"],
     data() {
         return {
-            // forecasts: [],
-            // NUM_OF_FORECAST: 5,
             tempDate: '',
             tempdayOfWeek: '',
             checked: false
@@ -61,10 +59,10 @@ export default {
 <style scoped>
 .forecast {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(5, minmax(1em, 7em));
     grid-auto-rows: minmax(50px, auto);
-    margin: 3em auto;
-    width: 50%;
+    margin: 1em auto;
+    /* width: 50%; */
 }
 .forecast-details {
     display: grid;
