@@ -1,7 +1,7 @@
 <template>
     <div class="wrap">
         <div class="search">
-            <input v-model="destination" type="text" class="search-term" placeholder="Location" v-on:keyup.enter="search" />
+            <input v-model="destination" type="text" class="search-term" placeholder="Location (City, Zip, Country...)" v-on:keyup.enter="search" />
             <button type="submit" class="search-btn" @click="search">
                 <font-awesome-icon v-if="!searching" icon="search" size="7x" />
                 <font-awesome-icon v-if="searching" icon="spinner" size="7x" spin />
