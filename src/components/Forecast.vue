@@ -1,16 +1,18 @@
 <template>
-    <div class="forecast">
+    <div class="forecast" :class="{ 'loading-color': loading }">
         <div v-for="forecast in updatedForecasts" v-bind:key="forecast.id" class="forecast-details">
             <div class="date">
                 <div>{{forecast.date}}</div>
                 <div>{{forecast.dayOfWeek}}</div>
             </div>
-            <skycon v-bind:condition="forecast.icon" :width="45" :height="45" />
+            <font-awesome-icon v-if="loading" icon="spinner" size="3x" spin />
+            <skycon  v-if="!loading" v-bind:condition="forecast.icon" :width="45" :height="45" />
             <div class="degrees">
-                <div>{{changeScale ? forecast.highTempC : forecast.highTempF}}&deg; | {{changeScale ? forecast.lowTempC : forecast.lowTempF}}&deg;</div>
+                <div v-if="loading">-- | --</div>
+                <div v-if="!loading">{{changeScale ? forecast.highTempC : forecast.highTempF}}&deg; | {{changeScale ? forecast.lowTempC : forecast.lowTempF}}&deg;</div>
             </div>
             <div class="rain-percent">
-                <font-awesome-icon icon="tint" /> {{forecast.rainPercent}}%
+                <font-awesome-icon icon="tint" /> <span v-if="loading"> --</span> <span v-if="!loading"> {{forecast.rainPercent}}%</span>
             </div>
         </div>
     </div>
@@ -21,7 +23,7 @@ import moment from 'moment'
 
 export default {
     name: 'Forecast',
-    props: ["weather", "changeScale"],
+    props: ["weather", "changeScale", "loading"],
     data() {
         return {
             tempDate: '',
@@ -57,6 +59,12 @@ export default {
 </script>
 
 <style scoped>
+.loading-color {
+    color: #a2a2a2;
+}
+.fa-spinner {
+    margin: 0 auto;
+}
 .forecast {
     display: grid;
     grid-template-columns: repeat(5, minmax(1em, 7em));

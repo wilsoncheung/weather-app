@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <CurrentWeather v-if="weather.length != 0" :weather="weather" v-on:scaleClicked="changeScale = !changeScale" />
-    <SearchBar v-if="weather.length != 0" v-on:updatedWeather="updateWeather" />
-    <Forecast v-if="weather.length != 0" :weather="weather" :changeScale="changeScale" />
+    <CurrentWeather v-if="weather.length != 0" v-bind:weather="weather" v-on:scaleClicked="changeScale = !changeScale" :loading="loading" />
+    <SearchBar v-if="weather.length != 0" @updatedWeather="updateWeather" @isSearching="isSearching" />
+    <Forecast v-if="weather.length != 0" :weather="weather" :changeScale="changeScale" :loading="loading" />
+    <Footer />
   </div>
 </template>
 
@@ -10,6 +11,7 @@
 import CurrentWeather from './components/CurrentWeather.vue'
 import SearchBar from './components/SearchBar.vue'
 import Forecast from './components/Forecast.vue'
+import Footer from './components/Footer.vue'
 import $ from 'jquery'
 // import axios from 'axios'
 
@@ -18,7 +20,8 @@ export default {
   components: {
     CurrentWeather,
     SearchBar,
-    Forecast
+    Forecast,
+    Footer
   },
   data: () => ({
     geolocation: {
@@ -28,10 +31,14 @@ export default {
     },
     weather: [],
     errors: [],
-    changeScale: false
+    changeScale: false,
+    loading: false
   }),
 
   methods: {
+    isSearching(boolVal) {
+      this.loading = boolVal;
+    },
     updateWeather(newWeatherUpdate) {
       this.weather = newWeatherUpdate;
       // console.log("Weather updated!!");
@@ -66,20 +73,24 @@ export default {
           success: function(resp) {
             //Check that the returned objects contains data
             if (Object.keys(resp).length !== 0){
-              self.weather = resp;
+              self.weather = resp;    // if used this here, it would reference the this in this ajax call!!
               // self.reverseGeocoding(self.geolocation);
+              self.loading = false;
             }
           },
           error: function(error) {
             self.errors.push(error);
+            self.loading = false;
           }
       });
     },
     setPositions(position) {
+        this.loading = true;
         this.geolocation.latitude = position.coords.latitude;
         this.geolocation.longitude = position.coords.longitude;
         this.getWeatherOnCurrentPosition(this.geolocation);
-    }
+    },
+
   },
 
   // Great time to fire off api calls so it has some time to load 
@@ -100,9 +111,9 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin-top: 26vh;
   text-align: center;
   color: #2c3e50;
-  margin: 3em auto;
   display: grid;
   align-items: center;
   grid-template-rows: repeat(auto-fit, minmax(10rem, 1fr));

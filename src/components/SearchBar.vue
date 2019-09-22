@@ -1,9 +1,10 @@
 <template>
     <div class="wrap">
         <div class="search">
-            <input v-model="location" type="text" class="search-term" placeholder="Location" v-on:keyup.enter="search" />
+            <input v-model="destination" type="text" class="search-term" placeholder="Location" v-on:keyup.enter="search" />
             <button type="submit" class="search-btn" @click="search">
-                <font-awesome-icon icon="search" size="7x" />
+                <font-awesome-icon v-if="!searching" icon="search" size="7x" />
+                <font-awesome-icon v-if="searching" icon="spinner" size="7x" spin />
             </button>
         </div>
         <p v-if="searchTimeStamp != ''" class="updated-on-text">as of {{searchTimeStamp}}</p> 
@@ -19,10 +20,11 @@ export default {
     name: 'SearchBar',
     data() {
         return {
-            location: '',
+            destination: '',
             searchTimeStamp: '',
             geolocation: [],
-            errors: []
+            errors: [],
+            searching: false
         }
     },
     methods: {
@@ -45,17 +47,25 @@ export default {
                         self.searchTimeStamp = moment(resp.currently.time * 1000).format("MM/DD/YY h:mm:ss A");
                         // console.log('update api called', resp); 
                         // console.log(latitude + ', ' + longitude);  
+                        self.searching = false;
+                        self.$emit('isSearching', self.searching);
                     }
                 },
                 error: function(error) {
                     self.errors.push(error);
+                    self.searching = false;
+                    self.$emit('isSearching', self.searching);
                 }
             });
         },
         search() {
-            if (this.location != '') {
+            if (this.destination != '') {
                 let self = this;
-                axios.get('https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + self.location + '&key=AIzaSyB4v4851zzgqR4vYwG3FZbEckU2yMavgJY')
+
+                self.searching = true;
+                self.$emit('isSearching', self.searching);
+
+                axios.get('https://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=' + self.destination + '&key=AIzaSyB4v4851zzgqR4vYwG3FZbEckU2yMavgJY')
                     .then(resp => {
                         self.geolocation = resp.data.results[0];
                         self.getWeather();
@@ -63,6 +73,7 @@ export default {
                     })
                     .catch(e => {
                         self.errors.push(e);
+                        self.searching = false;
                     });
             }
         }
