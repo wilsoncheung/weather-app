@@ -71,7 +71,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <div id="myChart"></div>
+            <zingchart :data="chartData"></zingchart>
           </div>
         </div>
       </div>
@@ -99,6 +99,14 @@ export default {
         uvLevel: 0,
         rainPercent: 0,
         summary: ""
+      },
+      chartData: {
+        type: "line",
+        series: [
+          {
+            values: [4, 5, 3, 3, 4, 4]
+          }
+        ]
       }
     };
   },

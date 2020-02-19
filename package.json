@@ -20,7 +20,8 @@
     "jquery": "^3.4.1",
     "moment": "^2.24.0",
     "vue": "^2.6.10",
-    "vue-skycon": "^1.0.4"
+    "vue-skycon": "^1.0.4",
+    "zingchart-vue": "^1.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.11.0",

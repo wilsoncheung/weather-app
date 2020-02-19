@@ -4,12 +4,15 @@ import VueSkycons from 'vue-skycon'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSearch, faTint, faSpinner, faCoffee, faHourglass, faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
+import zingchartVue from 'zingchart-vue';
 
 library.add(faSearch, faTint, faSpinner, faCoffee, faHourglass, faClock);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('font-awesome-layers', FontAwesomeLayers);
 Vue.component('font-awesome-layers-text', FontAwesomeLayersText);
+
+Vue.component('zingchart', zingchartVue);
 
 Vue.config.productionTip = false;
 // Vue.config.keyCodes = {
