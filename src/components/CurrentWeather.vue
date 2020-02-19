@@ -45,11 +45,43 @@
         <input type="checkbox" v-model="checked" @click="$emit('scaleClicked')" />
         <span class="slider" data-on="C" data-off="F"></span>
       </label>
+      <button
+        type="button"
+        class="btn btn-outline-secondary btn-sm"
+        data-toggle="modal"
+        data-target="#hourlyForecast"
+      >
+        <font-awesome-icon icon="clock" />&nbsp;Hourly
+      </button>
+    </div>
+    <div
+      class="modal fade"
+      id="hourlyForecast"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="hourlyForecast"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="hourlyForecast">{{current.date}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="myChart"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   name: "CurrentWeather",
   props: ["weather", "loading"],
@@ -110,6 +142,7 @@ export default {
   computed: {
     current() {
       let self = this;
+
       return (self.today = {
         tempF: Math.ceil(this.weather.currently.temperature),
         tempC: this.celsiusConversion(this.weather.currently.temperature),
@@ -124,8 +157,27 @@ export default {
         ),
         uvLevel: this.weather.currently.uvIndex,
         rainPercent: Math.ceil(this.weather.currently.precipProbability * 100),
-        summary: this.weather.currently.summary
+        summary: this.weather.currently.summary,
+        humidity: this.weather.currently.humidity,
+        date: moment(this.weather.currently.time * 1000).format(
+          "MMM DD, YYYY ddd"
+        )
       });
+    },
+    hourly() {
+      return this.weather.hourly.data.slice(0, 13).map(h => ({
+        id: h.time,
+        date: moment(h.time * 1000).format("MMM DD, YYYY ddd"),
+        time: moment(h.time * 1000).format("h:mm A"),
+        dayOfWeeK: moment(h.time * 1000).format("ddd"),
+        icon: h.icon,
+        summary: h.summary,
+        tempF: h.temperature,
+        tempC: this.celsiusConversion(h.temperature),
+        rainPercent: Math.ceil(h.precipProbability * 100),
+        uvLevel: h.uvIndex,
+        humidity: h.humidity
+      }));
     }
   }
 };

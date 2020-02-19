@@ -19,7 +19,7 @@
       <div class="rain-percent text-center">
         <font-awesome-icon icon="tint" />
         <span v-if="loading">--</span>
-        <span v-if="!loading">{{forecast.rainPercent}}%</span>
+        <span v-if="!loading">&nbsp;{{forecast.rainPercent}}%</span>
       </div>
     </div>
   </div>
