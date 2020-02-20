@@ -198,7 +198,7 @@ export default {
         plot: {
           aspect: "spline",
           "value-box": {
-            text: "%v F"
+            text: this.checked ? "%v C" : "%v F"
           },
           tooltip: {
             visible: false
@@ -225,12 +225,12 @@ export default {
           }
         },
         "scale-y": {
-          format: "%v F",
+          format: this.checked ? "%v C" : "%v F",
           // values: "0:100",
           "max-value":
             Math.max.apply(
               Math,
-              this.hourly.map(h => h.tempF)
+              this.hourly.map(h => (this.checked ? h.tempC : h.tempF))
             ) + 10,
           label: {
             text: "Temperature",
@@ -246,7 +246,10 @@ export default {
         },
         series: [
           {
-            values: this.hourly.map(h => [h.id * 1000, h.tempF]),
+            values: this.hourly.map(h => [
+              h.id * 1000,
+              this.checked ? h.tempC : h.tempF
+            ]),
             marker: {
               /* Marker object */
               "background-color": "#FF0066" /* hexadecimal or RGB value */,
