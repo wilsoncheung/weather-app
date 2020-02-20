@@ -62,10 +62,12 @@
       aria-labelledby="hourlyForecast"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="hourlyForecast">{{current.date}}</h5>
+            <!-- <h5 class="modal-title" id="hourlyForecast">
+              <strong>{{current.date}}</strong>
+            </h5>-->
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -99,14 +101,6 @@ export default {
         uvLevel: 0,
         rainPercent: 0,
         summary: ""
-      },
-      chartData: {
-        type: "line",
-        series: [
-          {
-            values: [4, 5, 3, 3, 4, 4]
-          }
-        ]
       }
     };
   },
@@ -168,7 +162,7 @@ export default {
         summary: this.weather.currently.summary,
         humidity: this.weather.currently.humidity,
         date: moment(this.weather.currently.time * 1000).format(
-          "MMM DD, YYYY ddd"
+          "MMM DD, YYYY | dddd"
         )
       });
     },
@@ -180,12 +174,92 @@ export default {
         dayOfWeeK: moment(h.time * 1000).format("ddd"),
         icon: h.icon,
         summary: h.summary,
-        tempF: h.temperature,
+        tempF: Math.ceil(h.temperature),
         tempC: this.celsiusConversion(h.temperature),
         rainPercent: Math.ceil(h.precipProbability * 100),
         uvLevel: h.uvIndex,
         humidity: h.humidity
       }));
+    },
+    chartData() {
+      return {
+        type: "area",
+        title: {
+          text: "Hourly Forecast",
+          "font-size": "28px",
+          "adjust-layout": true,
+          color: "#2c3e50"
+        },
+        subtitle: {
+          text: this.current.date,
+          "font-size": "14px",
+          color: "#2c3e50"
+        },
+        plot: {
+          aspect: "spline",
+          "value-box": {
+            text: "%v F"
+          },
+          tooltip: {
+            visible: false
+          },
+          "active-area": true
+        },
+        "scale-x": {
+          label: {
+            text: "Time",
+            "font-size": 13
+          },
+          "min-value": this.hourly[0].id * 1000,
+          "max-value": this.hourly[12].id * 1000,
+          step: "1hour", // "30minute"
+          transform: {
+            type: "date",
+            all: "%g %a" //"%M %d <br> %D <br> %g:%i %a"
+          },
+          "items-overlap": true,
+          "max-items": 12,
+          item: {
+            "font-size": 12,
+            color: "#2c3e50"
+          }
+        },
+        "scale-y": {
+          format: "%v F",
+          // values: "0:100",
+          "max-value":
+            Math.max.apply(
+              Math,
+              this.hourly.map(h => h.tempF)
+            ) + 10,
+          label: {
+            text: "Temperature",
+            "font-size": 11
+          },
+          item: {
+            "font-size": 12,
+            color: "#2c3e50"
+          },
+          guide: {
+            "line-style": "solid"
+          }
+        },
+        series: [
+          {
+            values: this.hourly.map(h => [h.id * 1000, h.tempF]),
+            marker: {
+              /* Marker object */
+              "background-color": "#FF0066" /* hexadecimal or RGB value */,
+              size: 3 /* in pixels */,
+              "border-color": "#6666FF" /* hexadecimal or RBG value */,
+              "border-width": 2 /* in pixels */
+            },
+            "background-color":
+              "#6666FF #FF0066" /* Single color or gradient (2 colors) */,
+            "alpha-area": 0.5 /* Shaded region transparency */
+          }
+        ]
+      };
     }
   }
 };
