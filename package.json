@@ -18,7 +18,7 @@
     "core-js": "^2.6.5",
     "gh-pages": "^2.1.1",
     "jquery": "^3.4.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "vue": "^2.6.10",
     "vue-skycon": "^1.0.4",
     "zingchart-vue": "^1.0.2"
